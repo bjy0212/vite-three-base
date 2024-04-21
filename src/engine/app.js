@@ -39,7 +39,7 @@ export class App {
         this.#camera = scene.camera;
 
         this.SetUpScene(scene);
-        //this.SetUpComposer();
+        this.SetUpComposer();
         this.StartRendering();
         this.SetUpResize();
     }
@@ -129,8 +129,8 @@ export class App {
                 then = now;
 
                 //this.controls.update();
-                //this.composer.render();
-                this.#renderer.renderAsync(this.scene, this.#camera);
+                this.composer.render();
+                // this.#renderer.render(this.scene, this.#camera);
                 this.Update(dt / 1000);
             }
         };
