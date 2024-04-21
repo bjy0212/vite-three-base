@@ -14,12 +14,12 @@ import { Input } from "./input";
 
 export class App {
     /**@type {THREE.Scene} */ scene;
-    /**@type {WebGPURenderer} */ #renderer;
+    /**@type {THREE.WebGLRenderer} */ #renderer;
     /**@type {THREE.Camera} */ #camera;
     /**@type {Input}*/ #input;
 
     constructor(canvas) {
-        this.#renderer = new WebGPURenderer({
+        this.#renderer = new THREE.WebGLRenderer({
             logarithmicDepthBuffer: true,
             canvas: canvas,
             antialias: true,
