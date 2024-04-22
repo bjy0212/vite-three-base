@@ -17,12 +17,16 @@ export class App {
     /**@type {THREE.WebGLRenderer} */ #renderer;
     /**@type {THREE.Camera} */ #camera;
     /**@type {Input}*/ #input;
+    /**@type {{rendering:number}}*/ #settings = {
+        rendering: 0.9
+    };
 
     constructor(canvas) {
         this.#renderer = new THREE.WebGLRenderer({
             logarithmicDepthBuffer: true,
             canvas: canvas,
             antialias: true,
+            alpha: false,
         });
         this.#renderer.shadowMap.enabled = true;
         this.#renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -38,7 +42,7 @@ export class App {
         await scene.Init();
         this.#camera = scene.camera;
 
-        this.SetUpScene(scene);
+        await this.SetUpScene(scene);
         this.SetUpComposer();
         this.StartRendering();
         this.SetUpResize();
@@ -48,17 +52,17 @@ export class App {
         this.#input = input;
     }
 
-    SetUpScene(scene) {
+    async SetUpScene(scene) {
         this.scene = scene;
 
-        this.scene.traverse((e) => {
-            if (e.Start) e.Start();
+        this.scene.traverse(async (e) => {
+            if (e.Start) await e.Start();
         });
     }
 
     SetUpComposer() {
         this.composer = new EffectComposer(this.#renderer);
-        this.composer.setPixelRatio(1);
+        this.composer.setPixelRatio(this.#settings.rendering);
         this.passes = {};
         this.passes.renderPass = new RenderPass(this.scene, this.#camera);
         this.composer.addPass(this.passes.renderPass);
@@ -112,7 +116,7 @@ export class App {
         AutoResize();
     }
 
-    StartRendering(fps) {
+    StartRendering(fps = 60) {
         this.fps = fps;
 
         const renderLoop = async () => {
